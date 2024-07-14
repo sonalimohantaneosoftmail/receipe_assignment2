@@ -1,0 +1,11 @@
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.env
+*.log
+local_settings.py
+db.sqlite3
+venv/
+.pytest_cache/
+.ruff_cache/
