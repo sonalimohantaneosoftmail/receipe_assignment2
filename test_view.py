@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from receipes.models import Profile,Recipe,Rating,Comment,RecipeCollection,UserFollow,User,Notification
 from receipes.forms import ProfileForm,RecipeForm,RatingForm,CommentForm,RecipeCollectionForm,AddRecipeToCollectionForm
 from receipes.views import ProfileDetailView,UserRecipesView
+from django.http import Http404
 
 @pytest.fixture
 def client():
@@ -537,5 +538,42 @@ def test_delete_recipe_from_collection_post():
     collection.refresh_from_db()
     assert recipe not in collection.recipes.all()
 
+
+#user follow
+
+from unittest.mock import patch
+
+@pytest.fixture
+def user_to_follow():
+    """Create another test user to follow."""
+    return mixer.blend(User)
+
+
+@pytest.mark.django_db
+def test_follow_user(client, user, user_to_follow):
+    """Test following another user."""
+    # Login the user
+    client.force_login(user)
+
+    # Mock the send_notification.delay method
+    with patch('receipes.tasks.send_notification.delay') as mock_send_notification:
+        # Get the follow_user view URL
+        url = reverse('follow_user', kwargs={'user_id': user_to_follow.id})
+
+        # Test following a user
+        response = client.post(url)
+
+        # Assert the response status code and redirection
+        assert response.status_code == 302  # Redirect status code
+        assert response.url == reverse('user_profile', kwargs={'user_id': user_to_follow.id})
+
+        # Assert that send_notification.delay was called with correct arguments
+        mock_send_notification.assert_called_once_with(
+            recipient_id=user_to_follow.id,
+            message=f"Hello {user_to_follow.username},\n\n{user.username} has started following you.",
+        )
+
+        # Optionally, assert that the follow relationship is created in the database
+        assert UserFollow.objects.filter(follower=user, followed=user_to_follow).exists()
 
 
