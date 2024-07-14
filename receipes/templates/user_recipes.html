@@ -1,0 +1,19 @@
+<!-- templates/user_recipes.html -->
+{% extends 'base.html' %}
+
+{% block title %}Your Recipes{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Your Recipes</h2>
+    {% if recipes %}
+        <ul class="list-group">
+            {% for recipe in recipes %}
+                <li class="list-group-item">
+                    <a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no recipes.</p>
+    {% endif %}
+{% endblock %}

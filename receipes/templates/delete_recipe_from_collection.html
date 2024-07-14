@@ -1,0 +1,13 @@
+<!-- users/templates/delete_recipe_from_collection.html -->
+{% extends 'base.html' %}
+
+{% block title %}Delete Recipe from Collection{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Remove "{{ recipe.title }}" from "{{ collection.name }}"</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm Removal</button>
+    </form>
+    <p><a href="{% url 'collection_detail' collection.id %}" class="btn btn-secondary mt-3">Cancel</a></p>
+{% endblock %}

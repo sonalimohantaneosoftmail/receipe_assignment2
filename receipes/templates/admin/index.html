@@ -1,0 +1,18 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}{{ site_header }}{% endblock %}
+
+{% block content %}
+  <h1>{{ site_header }}</h1>
+  <div id="content-main">
+    <ul class="dashboard-links">
+      <li>
+        <a href="{% url 'admin:popular_recipes' %}">Popular Recipes</a>
+      </li>
+      <li>
+        <a href="{% url 'admin:user_activity' %}">User Activity</a>
+      </li>
+      <!-- Add more custom links here if needed -->
+    </ul>
+  </div>
+{% endblock %}

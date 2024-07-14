@@ -1,0 +1,13 @@
+<!-- delete_rating.html -->
+{% extends 'base.html' %}
+
+{% block title %}Delete Rating{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Delete Rating</h2>
+    <p>Are you sure you want to delete your rating?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    </form>
+{% endblock %}

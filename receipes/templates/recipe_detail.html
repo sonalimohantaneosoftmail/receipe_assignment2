@@ -1,0 +1,87 @@
+<!-- templates/recipes/recipe_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">{{ recipe.title }}</h2>
+    {% if recipe.image %}
+        <img src="{{ recipe.image.url }}" class="img-fluid mb-3" alt="{{ recipe.title }}">
+    {% endif %}
+    <p><strong>Category:</strong> {{ recipe.category }}</p>
+    <p><strong>Cooking Time:</strong> {{ recipe.cooking_time }} minutes</p>
+    <p><strong>Ingredients:</strong></p>
+    <p>{{ recipe.ingredients }}</p>
+    <p><strong>Instructions:</strong></p>
+    <p>{{ recipe.instructions }}</p>
+    <p><strong>Average Rating:</strong> {{ average_rating }}</p>
+    <p><strong>Author:</strong> <a href="{% url 'user_profile' recipe.author.id %}">{{ recipe.author.username }}</a></p>
+
+    {% if request.user.is_authenticated %}
+        {% if request.user == recipe.author %}
+            <p><a href="{% url 'update_recipe' recipe.pk %}" class="btn btn-primary">Update Recipe</a></p>
+            <p><a href="{% url 'delete_recipe' recipe.pk %}" class="btn btn-danger">Delete Recipe</a></p>
+        {% endif %}
+    {% else %}
+        <p><strong>You must be logged in to update or delete recipes.</strong></p>
+    {% endif %}
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Comments</h3>
+            {% for comment in comments %}
+                <div class="mb-2">
+                    <p><strong>{{ comment.author }}:</strong> {{ comment.text }}</p>
+                    {% if comment.author == request.user %}
+                        <form method="post" action="{% url 'delete_comment' comment.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                        <a href="{% url 'update_comment' comment.pk %}" class="btn btn-secondary btn-sm">Update</a>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No comments yet.</p>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-6">
+            <h3>Ratings</h3>
+            {% for rating in ratings %}
+                <div class="mb-2">
+                    <p><strong>{{ rating.author }}:</strong> Rated {{ rating.score }}</p>
+                    {% if rating.author == request.user %}
+                        <form method="post" action="{% url 'delete_rating' rating.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete Rating</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No ratings yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr>
+
+    <h3>Add a Comment</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Add Comment</button>
+    </form>
+
+    <h3>Add a Rating</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ rating_form.as_p }}
+        {% if recipe.author != request.user %}
+            <button type="submit" name="rating_submit" class="btn btn-primary">Add Rating</button>
+        {% else %}
+            <p class="text-muted">You cannot rate your own recipe</p>
+        {% endif %}
+    </form>
+{% endblock %}

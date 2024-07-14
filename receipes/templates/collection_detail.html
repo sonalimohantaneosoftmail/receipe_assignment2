@@ -1,0 +1,25 @@
+<!-- your_app/templates/collection_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ collection.name }}{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ collection.name }}</h1>
+
+    <h2>Recipes</h2>
+    <ul class="list-group">
+        {% if collection.recipes.exists %}
+            {% for recipe in collection.recipes.all %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a>
+                    <form method="POST" action="{% url 'delete_recipe_from_collection' collection.id recipe.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li class="list-group-item">No recipes added yet.</li>
+        {% endif %}
+    </ul>
+{% endblock %}

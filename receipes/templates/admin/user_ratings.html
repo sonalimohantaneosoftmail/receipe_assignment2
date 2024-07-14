@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Ratings by {{ user.username }}</h1>
+<ul>
+    {% for rating in ratings %}
+    <li>Rating: {{ rating.score }} (on {{ rating.recipe.title }} at {{ rating.created_at }})</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'admin:auth_user_changelist' %}">Back to Users</a>
+{% endblock %}

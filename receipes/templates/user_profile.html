@@ -1,0 +1,33 @@
+<!-- user_profile.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_user.username }}'s Profile{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ profile_user.username }}'s Profile</h1>
+    <h3>{{ profile_user.profile.bio }}</h3>
+
+    <div class="mb-4">
+        <p><strong>Followers:</strong> {{ follower_count }}</p>
+        <p><strong>Following:</strong> {{ following_count }}</p>
+    </div>
+
+    {% if following %}
+        <form action="{% url 'unfollow_user' profile_user.id %}" method="POST" class="mb-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Unfollow</button>
+        </form>
+    {% else %}
+        <form action="{% url 'follow_user' profile_user.id %}" method="POST" class="mb-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Follow</button>
+        </form>
+    {% endif %}
+
+    <h2>Recipes by {{ profile_user.username }}</h2>
+    <ul class="list-group">
+        {% for recipe in user_recipes %}
+            <li class="list-group-item"><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

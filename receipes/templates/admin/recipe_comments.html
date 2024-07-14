@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Comments on {{ recipe.title }}</h1>
+<ul>
+    {% for comment in comments %}
+    <li>{{ comment.text }} by {{ comment.author.username }} at {{ comment.created_at }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'admin:receipes_recipe_changelist' %}">Back to Recipes</a>
+{% endblock %}

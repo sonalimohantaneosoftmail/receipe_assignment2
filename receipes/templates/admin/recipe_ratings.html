@@ -1,0 +1,10 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Ratings for {{ recipe.title }}</h1>
+<ul>
+    {% for rating in ratings %}
+    <li>Rating: {{ rating.score }} by {{ rating.author.username }} at {{ rating.created_at }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'admin:receipes_recipe_changelist' %}">Back to Recipes</a>
+{% endblock %}

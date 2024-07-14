@@ -1,0 +1,14 @@
+<!-- users/templates/add_recipe_to_collection.html -->
+{% extends 'base.html' %}
+
+{% block title %}Add Recipe to Collection{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Add "{{ recipe.title }}" to Collection</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Add to Collection</button>
+    </form>
+    <p><a href="{% url 'home' %}" class="btn btn-secondary mt-3">Back to Home</a></p>
+{% endblock %}

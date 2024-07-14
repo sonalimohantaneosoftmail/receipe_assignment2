@@ -1,0 +1,15 @@
+{% if user.is_authenticated %}
+  {% if user != profile_user %}
+    {% if profile_user in user.following.all %}
+      <form action="{% url 'unfollow_user' profile_user.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Unfollow</button>
+      </form>
+    {% else %}
+      <form action="{% url 'follow_user' profile_user.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Follow</button>
+      </form>
+    {% endif %}
+  {% endif %}
+{% endif %}

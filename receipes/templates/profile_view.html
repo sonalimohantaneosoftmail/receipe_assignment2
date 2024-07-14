@@ -1,0 +1,14 @@
+<!-- your_app/templates/profile_view.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ profile.user.username }}'s Profile{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ profile.user.username }}'s Profile</h1>
+    <p>{{ profile.bio }}</p>
+    <div class="mb-4">
+        <p><strong>Followers:</strong> {{ follower_count }}</p>
+        <p><strong>Following:</strong> {{ following_count }}</p>
+    </div>
+    <a href="{% url 'profile_edit' %}" class="btn btn-primary mt-3">Edit Bio</a>
+{% endblock %}

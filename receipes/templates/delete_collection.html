@@ -1,0 +1,13 @@
+<!-- users/templates/delete_collection.html -->
+{% extends 'base.html' %}
+
+{% block title %}Delete Collection{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Are you sure you want to delete the collection "{{ collection.name }}"?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm Deletion</button>
+    </form>
+    <p><a href="{% url 'collection_list' %}" class="btn btn-secondary mt-3">Cancel</a></p>
+{% endblock %}
