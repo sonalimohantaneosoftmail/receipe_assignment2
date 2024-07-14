@@ -530,4 +530,63 @@ def test_update_comment_view_get(client, user, comment):
     assert 'comment_form' in response.context
     assert response.context['comment_form'].instance == comment
 
-# Add more test cases for POST requests, non-existent comment handling, etc.
+#delete recipe from collection
+    
+@pytest.mark.django_db
+def test_delete_recipe_from_collection_get():
+    # Create a user
+    user = User.objects.create_user(username='testuser', password='12345')
+
+    # Log in the user
+    client = Client()
+    client.login(username='testuser', password='12345')
+
+    # Create a recipe and a collection
+    recipe = Recipe.objects.create(title='Test Recipe', ingredients='Test Ingredients', instructions='Test Instructions', category='Test Category', cooking_time=10, author=user)
+    collection = RecipeCollection.objects.create(name='Test Collection', user=user)
+    collection.recipes.add(recipe)
+
+    # Get the URL for the view
+    url = reverse('delete_recipe_from_collection', args=[collection.id, recipe.id])
+
+    # Make a GET request to the view
+    response = client.get(url)
+
+    # Check that the response is 200 OK and the correct template is used
+    assert response.status_code == 200
+    assert 'delete_recipe_from_collection.html' in (t.name for t in response.templates)
+
+    # Check that the collection and recipe are in the context
+    assert response.context['collection'] == collection
+    assert response.context['recipe'] == recipe
+
+@pytest.mark.django_db
+def test_delete_recipe_from_collection_post():
+    # Create a user
+    user = User.objects.create_user(username='testuser', password='12345')
+
+    # Log in the user
+    client = Client()
+    client.login(username='testuser', password='12345')
+
+    # Create a recipe and a collection
+    recipe = Recipe.objects.create(title='Test Recipe', ingredients='Test Ingredients', instructions='Test Instructions', category='Test Category', cooking_time=10, author=user)
+    collection = RecipeCollection.objects.create(name='Test Collection', user=user)
+    collection.recipes.add(recipe)
+
+    # Get the URL for the view
+    url = reverse('delete_recipe_from_collection', args=[collection.id, recipe.id])
+
+    # Make a POST request to the view
+    response = client.post(url)
+
+    # Check that the response is a redirect
+    assert response.status_code == 302
+    assert response.url == reverse('collection_detail', args=[collection.id])
+
+    # Check that the recipe has been removed from the collection
+    collection.refresh_from_db()
+    assert recipe not in collection.recipes.all()
+
+
+

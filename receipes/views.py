@@ -582,15 +582,47 @@ def delete_recipe_from_collection(request, collection_id, recipe_id):
     )
 
 
+# @login_required
+# def delete_collection(request, collection_id):
+#     collection = get_object_or_404(
+#         RecipeCollection, pk=collection_id, user=request.user
+#     )
+#     if request.method == "POST":
+#         collection.delete()
+#         return redirect("collection_list")
+#     return render(request, "delete_collection.html", {"collection": collection})
+
 @login_required
 def delete_collection(request, collection_id):
-    collection = get_object_or_404(
-        RecipeCollection, pk=collection_id, user=request.user
-    )
-    if request.method == "POST":
-        collection.delete()
-        return redirect("collection_list")
-    return render(request, "delete_collection.html", {"collection": collection})
+    """
+    Delete a user's recipe collection.
+
+    Args:
+        request: The HTTP request object.
+        collection_id (int): The ID of the collection to be deleted.
+
+    Returns:
+        HttpResponse: Redirects to the collection list page if the collection is successfully deleted.
+        Render: Renders the delete confirmation page if the request method is GET.
+
+    Raises:
+        Http404: If the collection does not exist.
+    """
+    try:
+        collection = get_object_or_404(
+            RecipeCollection, pk=collection_id, user=request.user
+        )
+
+        if request.method == "POST":
+            collection.delete()
+            logger.info(f"User {request.user.username} deleted collection {collection_id}.")
+            return redirect("collection_list")
+
+        return render(request, "delete_collection.html", {"collection": collection})
+    except Exception as e:
+        logger.error(f"Error deleting collection {collection_id} for user {request.user.username}: {e}")
+        # return HttpResponse("An error occurred while trying to delete the collection.", status=500)
+
 
 
 @login_required
