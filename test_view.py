@@ -31,25 +31,6 @@ def test_register_view_get(client, register_url):
     assert 'register.html' in [template.name for template in response.templates]
     assert isinstance(response.context['form'], CustomUserCreationForm)
 
-# @pytest.mark.django_db
-# def test_register_view_post_success(client, register_url, user_data):
-#     response = client.post(register_url, user_data, follow=True)
-#     assert response.status_code == 200  # Check if form errors
-#     assert response.redirect_chain  # Check if there was a redirect
-
-#     # Optionally, assert the redirect URL if needed
-#     if response.redirect_chain:
-#         assert response.redirect_chain[0][0] == '/home/'  # Check if redirected to correct URL
-    
-#     # Check if user is logged in
-#     user = get_user_model().objects.get(username=user_data['username'])
-#     assert user.is_authenticated
-    
-#     # Check session variable
-#     assert 'user_id' in client.session
-#     assert client.session['user_id'] == user.id
-
-
 #the submitted form data is invalid, specifically when the passwords do not match (password1 and password2).
 @pytest.mark.django_db
 def test_register_view_post_failure(client, register_url, user_data):
@@ -148,31 +129,6 @@ def test_profile_detail_view(client, profile_detail_url, django_user_model):
     assert 'profile_view.html' in [template.name for template in response.templates]
     assert response.context['profile'] == profile
 
-
-# @pytest.mark.django_db
-# def test_profile_detail_view_error_handling(client, profile_detail_url, django_user_model, monkeypatch):
-#     # Mock a scenario where profile retrieval fails
-#     def mock_get_object(self, queryset=None):
-#         raise Profile.DoesNotExist("Profile does not exist.")
-    
-#     # Apply the monkeypatch to replace the original method
-#     monkeypatch.setattr(ProfileDetailView, 'get_object', mock_get_object)
-    
-#     # Create a test user
-#     user = django_user_model.objects.create_user(username='testuser', password='testpassword')
-    
-#     # Login the test user
-#     client.login(username='testuser', password='testpassword')
-    
-#     # Make a GET request to profile detail view
-#     response = client.get(profile_detail_url)
-    
-#     # Assertions for error handling
-#     assert response.status_code == 500  # You can customize this based on your error handling
-#     assert 'profile_view.html' not in [template.name for template in response.templates]
-#     assert 'An error occurred while retrieving the profile.' in str(response.content)
-
-
 @pytest.fixture
 def home_url():
     return reverse('home')  # Adjust 'home' based on your URL configuration
@@ -202,15 +158,8 @@ def test_home_view_get(client, home_url):
     assert 'home.html' in [template.name for template in response.templates]
     assert 'Pasta Carbonara' in str(response.content)
 
-
-# import pytest
 from django.urls import reverse_lazy
-# from django.contrib.auth.models import User
-# from django.contrib.auth import authenticate, login, logout
-# from django.contrib.messages.middleware import MessageMiddleware
-# from django.test import RequestFactory
-# from django.contrib import messages
-# from receipes.views import LogoutView
+
 
 @pytest.mark.django_db
 def test_logout_view():

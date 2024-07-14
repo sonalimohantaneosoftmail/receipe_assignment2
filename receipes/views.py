@@ -582,16 +582,6 @@ def delete_recipe_from_collection(request, collection_id, recipe_id):
     )
 
 
-# @login_required
-# def delete_collection(request, collection_id):
-#     collection = get_object_or_404(
-#         RecipeCollection, pk=collection_id, user=request.user
-#     )
-#     if request.method == "POST":
-#         collection.delete()
-#         return redirect("collection_list")
-#     return render(request, "delete_collection.html", {"collection": collection})
-
 @login_required
 def delete_collection(request, collection_id):
     """
