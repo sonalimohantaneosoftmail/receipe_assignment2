@@ -1,82 +1,4 @@
-
-
-# from django.contrib import admin
-# from receipes.models import Profile, Recipe, RecipeCollection
-# from django.contrib.auth.models import User, Group
-# from django.urls import path
-# from django.shortcuts import render
-# from django.db.models import Count
-# from django.utils.decorators import method_decorator
-# from django.views import View
-# from django.contrib.admin.views.decorators import staff_member_required
-
-# class ProfileInline(admin.StackedInline):
-#     model = Profile
-
-# class UserAdmin(admin.ModelAdmin):
-#     inlines = [ProfileInline]
-#     list_display = ('username', 'email', 'is_staff', 'is_active', 'last_login')
-#     search_fields = ('username', 'email')
-#     list_filter = ('is_staff', 'is_active')
-
-# class RecipeAdmin(admin.ModelAdmin):
-#     list_display = ('title', 'author', 'created_at', 'updated_at')
-#     search_fields = ('title', 'author__username')
-#     list_filter = ('created_at', 'updated_at')
-
-# class RecipeCollectionAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'user', 'recipes_count', 'created_at')
-#     search_fields = ('name', 'user__username')
-#     list_filter = ('created_at',)
-
-#     def recipes_count(self, obj):
-#         return obj.recipes.count()
-#     recipes_count.short_description = 'Recipes Count'
-
-# @method_decorator(staff_member_required, name='dispatch')
-# class PopularRecipesView(View):
-#     def get(self, request):
-#         recipes = Recipe.objects.annotate(save_count=Count('collections')).order_by('-save_count')[:10]
-#         return render(request, 'admin/popular_recipes.html', {'recipes': recipes})
-
-# @method_decorator(staff_member_required, name='dispatch')
-# class UserActivityView(View):
-#     def get(self, request):
-#         users = User.objects.annotate(recipe_count=Count('collections')).order_by('-recipe_count')[:10]
-#         return render(request, 'admin/user_activity.html', {'users': users})
-
-# class MyAdminSite(admin.AdminSite):
-#     site_header = 'My Admin Site'
-#     index_template = 'admin/index.html'  # Ensure this template exists
-
-#     def get_urls(self):
-#         urls = super().get_urls()
-#         custom_urls = [
-#             path('popular_recipes/', self.admin_view(PopularRecipesView.as_view()), name='popular_recipes'),
-#             path('user_activity/', self.admin_view(UserActivityView.as_view()), name='user_activity'),
-#         ]
-#         print("Custom URLs:", custom_urls)  # Debug print
-#         return custom_urls + urls
-
-# # Create an instance of MyAdminSite
-# admin_site = MyAdminSite(name='myadmin')
-
-# # Unregister User and Group from the default admin site if they are registered
-# try:
-#     admin.site.unregister(User)
-#     admin.site.unregister(Group)
-# except admin.sites.NotRegistered:
-#     pass
-
-# # Register User, Group, Recipe, and RecipeCollection with the custom admin site
-# admin_site.register(User, UserAdmin)
-# admin_site.register(Group)
-# admin_site.register(Recipe, RecipeAdmin)
-# admin_site.register(RecipeCollection, RecipeCollectionAdmin)
-
-# # Optionally, you can register other models here with admin_site.register()
-
-# # Ensure you have imported 'admin_site' where needed in your project
+ # Ensure you have imported 'admin_site' where needed in your project
 
 
 from django.contrib import admin
@@ -90,11 +12,11 @@ from django.views import View
 from django.contrib.admin.views.decorators import staff_member_required
 from receipes.models import Profile, Recipe, RecipeCollection, Comment, Rating, UserFollow
 
-class ProfileInline(admin.StackedInline):
+class ProfileInline(admin.StackedInline):  #vertically layout within the admin form  
     model = Profile
 
 class UserAdmin(admin.ModelAdmin):
-    inlines = [ProfileInline]
+    inlines = [ProfileInline]  #the relative model 'Profile' should have editable inline within the admin
     list_display = (
         'username', 'email',
         'recipe_count', 'follower_count', 'following_count',
@@ -104,14 +26,14 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('is_staff', 'is_active')
 
     def recipe_count(self, obj):
-        return obj.recipe_set.count()
-    recipe_count.short_description = 'Recipes'
+        return obj.recipe_set.count()  #count of recipes associate with a user
+    recipe_count.short_description = 'Recipes'  #column name inside User -->> Recipes
 
     def follower_count(self, obj):
-        count = obj.followers.count()
-        url = reverse('admin:user_followers', args=[obj.id])
-        return format_html('<a href="{}">{}</a>', url, count)
-    follower_count.short_description = 'Followers'
+        count = obj.followers.count()  #that calculates the number of followers for each user (obj).
+        url = reverse('admin:user_followers', args=[obj.id])  
+        return format_html('<a href="{}">{}</a>', url, count) #Generates a clickable link (<a> tag) that directs to a specific admin URL (admin:user_followers) showing the list of followers for that user.
+    follower_count.short_description = 'Followers' #column name inside User
 
     def following_count(self, obj):
         count = obj.following.count()
@@ -179,7 +101,7 @@ class UserAdmin(admin.ModelAdmin):
 
     def comments_view(self, request, user_id):
         user = get_object_or_404(User, pk=user_id)
-        comments = user.comment_set.all()
+        comments = user.comment_set.all()  #a user will have multiple comments 
         context = dict(
             self.admin_site.each_context(request),
             user=user,
