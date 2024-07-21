@@ -81,7 +81,7 @@ class UserAdmin(admin.ModelAdmin):
         user = get_object_or_404(User, pk=user_id)
         followers = UserFollow.objects.filter(followed=user).select_related('follower')
         context = dict(
-            self.admin_site.each_context(request),
+            self.admin_site.each_context(request), # Adding common admin site context variables
             user=user,
             title='Followers',
             followers=followers,
